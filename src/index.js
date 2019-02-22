@@ -358,11 +358,15 @@ window.newStep = function(a, b) {
 
   let ok = false;
   for (let i = 0; i < pole[a[0]][a[1]].lines.length; i++) {
-    if (pole[a[0]][a[1]].lines[i][0] == b[0] && pole[a[0]][a[1]].lines[i][1] == b[1]) ok = true;
+    // Проверка на ходьбу по линиям
+    if (
+      pole[a[0]][a[1]].lines[i][0] == b[0] &&
+      pole[a[0]][a[1]].lines[i][1] == b[1]
+    )
+      ok = true;
   }
 
   if (ok == false) return false;
-  
 
   pole[a[0]][a[1]].player = 0;
   pole[b[0]][b[1]].player = 1;
