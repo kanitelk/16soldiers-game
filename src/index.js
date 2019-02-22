@@ -280,7 +280,8 @@ window.setup = function() {
   background(248, 241, 223);
 };
 
-var newX = 0, newY = 0, clickCounter = 0;
+var a = [10, 10],
+  b;
 
 window.draw = function() {
   for (let i = 0; i < 9; i++) {
@@ -313,47 +314,56 @@ window.draw = function() {
   //line(100, 100, 300, 300);
 
   window.mouseReleased = function() {
-    clickCounter++;
-    console.log(mouseX, mouseY);
+    let X = mouseX;
+    let Y = mouseY;
 
-    if (clickCounter % 2 == 0) {
-      clickCounter = 0;
-      let X = mouseX;
-      let Y = mouseY;
-
-      for (let i = 0; i < 9; i++) {
-        for (let j = 0; j < 9; j++) {
-          let a = [], b = [];
-          if (
-            pole[j][i].x &&
-            Math.abs(pole[j][i].x - newX) < 20 &&
-            Math.abs(pole[j][i].y - newY) < 20
-          ) {
-            console.log([j, i]);
+    for (let i = 0; i < 9; i++) {
+      for (let j = 0; j < 9; j++) {
+        if (
+          pole[j][i].x &&
+          Math.abs(pole[j][i].x - X) < 20 &&
+          Math.abs(pole[j][i].y - Y) < 20
+        ) {
+          b = [j, i];
+          if (!isEqual(a, b)) {
+            newStep(a, b);
+            a = [j, i];
+            b = [10, 10];
           }
-
-          if (
-            pole[j][i].x &&
-            Math.abs(pole[j][i].x - X) < 20 &&
-            Math.abs(pole[j][i].y - Y) < 20
-          ) {
-            pole[j][i].player = 1;
-            console.log([j, i]);
-          }
+        }
       }
-    }
 
       clear();
       redraw();
       background(248, 241, 223);
-    };
-
-    if (clickCounter % 2 == 0) {
-      window.newX = mouseX;
-      window.newY = mouseY;
     }
+  };
+};
 
+window.isEqual = function(a1, a2) {
+  return a1.length == a2.length && a1.every((v, i) => v === a2[i]);
+};
+
+window.newStep = function(a, b) {
+  console.log(a, b);
+
+  if (a[0] > 9 || a[0] < 0) return false;
+  if (a[1] > 9 || a[1] < 0) return false;
+  if (b[0] > 9 || b[0] < 0) return false;
+  if (b[1] > 9 || a[1] < 0) return false;
+
+  if (pole[b[0]][b[1]].player >= 1) return false; //Если на новом месте есть игрок, то ошибка
+
+  console.log(pole[a[0]][a[1]].lines);
+
+  let ok = false;
+  for (let i = 0; i < pole[a[0]][a[1]].lines.length; i++) {
+    if (pole[a[0]][a[1]].lines[i][0] == b[0] && pole[a[0]][a[1]].lines[i][1] == b[1]) ok = true;
   }
-}
 
-console.log(pole);
+  if (ok == false) return false;
+  
+
+  pole[a[0]][a[1]].player = 0;
+  pole[b[0]][b[1]].player = 1;
+};
