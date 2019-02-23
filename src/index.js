@@ -378,7 +378,18 @@ window.newStep = function(a, b) { // Ход игрока
   if (pole[b[0]][b[1]].player >= 1) return false; //Если на новом месте есть игрок, то ошибка
   if (pole[a[0]][a[1]].player === 2 || pole[a[0]][a[1]].player === 0) return false; //Если на старом месте пусто или чужой игрок, то ошибка
 
-  //console.log(pole[a[0]][a[1]].lines);
+  console.log(canEat(a, b));
+  
+
+  if (canEat(a, b)) {
+    pole[a[0]][a[1]].player = 0;
+    pole[b[0]][b[1]].player = 1;
+    let с = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+
+    pole[с[0]][с[1]].player = 0;
+    botStep(); // Вызываем ход компьютера
+    return false;
+  }
 
   let ok = false;
   for (let i = 0; i < pole[a[0]][a[1]].lines.length; i++) {
@@ -399,7 +410,7 @@ window.newStep = function(a, b) { // Ход игрока
 
 window.botStep = function () { // Расчет хода компьютера
 
-let steps = [];
+  let steps = [];
 
   for (let i = 0; i < 9; i++) { //Ищем все возможные ходы и добавляем их в массив
     for (let j = 0; j < 9; j++) {
@@ -430,9 +441,6 @@ let steps = [];
     let max = steps.length - 1;
     let step = Math.round(min - 0.5 + Math.random() * (max - min + 1));
 
-    console.log(step);
-    
-
     let x1 = steps[step].a[0]
     let y1 = steps[step].a[1]
     let x2 = steps[step].b[0]
@@ -442,7 +450,7 @@ let steps = [];
   } else {
     let min = 0;
     let max = stepsEat.length - 1;
-    let step = min - 0.5 + Math.random() * (max - min + 1)
+    let step = Math.round(min - 0.5 + Math.random() * (max - min + 1));
 
     let x1 = stepsEat[step].a[0]
     let y1 = stepsEat[step].a[1]
@@ -452,10 +460,6 @@ let steps = [];
     doBotStep([x1, y1], [x2, y2]);
   }
   
-
-  console.log(steps);
-  console.log(stepsEat);
-  
 }
 
 window.doBotStep = function (a,b) { // Делает ход компьютера
@@ -464,5 +468,18 @@ window.doBotStep = function (a,b) { // Делает ход компьютера
 }
 
 window.canEat = function (a,b) { // Проверка, можно ли съесть
-  return false;
+  let c = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+
+  if (!Number.isInteger(c[0]) || !Number.isInteger(c[1])) return false; //Если у c - нецелые числа
+  console.log(1);
+  
+  if (pole[b[0]][b[1]].player !== 0) return false; //Если на В уже игрок
+  console.log(2);
+  
+  if (pole[a[0]][a[1]].player === 0) return false; //Если на А нет игрока
+  console.log(3);
+  
+  
+  return true;
 }
+
