@@ -1,10 +1,11 @@
 import "./css/style.scss";
 import p5 from "p5";
+import { push_uniq } from "terser";
 //new p5();
 
 let pole = [];
 
-for (let i = 0; i < 9; i++) {
+for (let i = 0; i < 9; i++) { //Задаем двумерный массив для поля
   pole[i] = [];
   for (let j = 0; j < 9; j++) {
     pole[i][j] = 1;
@@ -137,11 +138,11 @@ function setDots(pole) {
   };
   pole[3][6] = {
     player: 2,
-    lines: [[3, 5], [2, 6], [4, 6], [4, 4]]
+    lines: [[3, 5], [2, 6], [4, 6]]
   };
   pole[3][7] = {
     player: 0,
-    lines: [[2, 8], [2, 6], [4, 6], [4, 7]]
+    lines: [[2, 8], [4, 6], [4, 7]]
   };
 
   //4 string
@@ -151,7 +152,7 @@ function setDots(pole) {
   };
   pole[4][1] = {
     player: 0,
-    lines: [[3, 1], [5, 1]]
+    lines: [[3, 1], [5, 1], [4,0], [4,2]]
   };
   pole[4][2] = {
     player: 0,
@@ -205,7 +206,7 @@ function setDots(pole) {
   };
   pole[5][6] = {
     player: 1,
-    lines: [[4, 6], [6, 6], [4, 4], [5, 5]]
+    lines: [[4, 6], [6, 6], [5, 5]]
   };
   pole[5][7] = {
     player: 0,
@@ -275,16 +276,42 @@ function setDots(pole) {
 pole = removeDots(pole);
 pole = setDots(pole);
 
-window.setup = function() {
+window.setup = function() { //Инициализация отрисовки Canvas
   createCanvas(530, 530);
   background(248, 241, 223);
+  noLoop();
 };
 
-var a = [10, 10],
+var a = [10, 10], //Храним позиции до и после хода
   b;
 
-window.draw = function() {
-  for (let i = 0; i < 9; i++) {
+window.onload = function () { //Чтобы линии сразу рисовались
+  loop();
+  noLoop();
+}
+
+window.draw = function() { //Рисуем игру
+
+  for (let i = 0; i < 9; i++) { //Рисуем линии
+    for (let j = 0; j < 9; j++) {
+      if(pole[j][i].lines === undefined) continue;
+      
+      let x1 = pole[j][i].x;
+      let y1 = pole[j][i].y;
+      let x2, y2;
+
+      for (let z = 0; z < pole[j][i].lines.length; z++) {
+        let W = pole[j][i].lines[z][0];
+        let H = pole[j][i].lines[z][1];
+        x2 = pole[W][H].x;
+        y2 = pole[W][H].y;
+        fill(246, 25, 36);
+        line(x1, y1, x2, y2);
+      }
+    }
+  }
+
+  for (let i = 0; i < 9; i++) { //Рисуем игроков и синие точки
     for (let j = 0; j < 9; j++) {
       if (pole[j][i].player === 2) {
         fill(246, 25, 36);
@@ -310,10 +337,8 @@ window.draw = function() {
     }
   }
 
-  //fill(204, 153, 0);
-  //line(100, 100, 300, 300);
-
-  window.mouseReleased = function() {
+  window.mouseReleased = function() { // при клике реализуем ход игрока
+    loop();
     let X = mouseX;
     let Y = mouseY;
 
@@ -325,26 +350,24 @@ window.draw = function() {
           Math.abs(pole[j][i].y - Y) < 20
         ) {
           b = [j, i];
-          if (!isEqual(a, b)) {
-            newStep(a, b);
+          if (!isEqual(a, b)) { // Если позиции а и б не равны, делаем ход
+            newStep(a, b); // Функция хода
             a = [j, i];
             b = [10, 10];
           }
         }
       }
-
-      clear();
-      redraw();
       background(248, 241, 223);
+      noLoop();
     }
   };
 };
 
-window.isEqual = function(a1, a2) {
+window.isEqual = function(a1, a2) { //Функция сравнения двух массивов
   return a1.length == a2.length && a1.every((v, i) => v === a2[i]);
 };
 
-window.newStep = function(a, b) {
+window.newStep = function(a, b) { // Ход игрока
   console.log(a, b);
 
   if (a[0] > 9 || a[0] < 0) return false;
@@ -353,8 +376,9 @@ window.newStep = function(a, b) {
   if (b[1] > 9 || a[1] < 0) return false;
 
   if (pole[b[0]][b[1]].player >= 1) return false; //Если на новом месте есть игрок, то ошибка
+  if (pole[a[0]][a[1]].player === 2 || pole[a[0]][a[1]].player === 0) return false; //Если на старом месте пусто или чужой игрок, то ошибка
 
-  console.log(pole[a[0]][a[1]].lines);
+  //console.log(pole[a[0]][a[1]].lines);
 
   let ok = false;
   for (let i = 0; i < pole[a[0]][a[1]].lines.length; i++) {
@@ -370,4 +394,75 @@ window.newStep = function(a, b) {
 
   pole[a[0]][a[1]].player = 0;
   pole[b[0]][b[1]].player = 1;
+  botStep(); // Вызываем ход компьютера
 };
+
+window.botStep = function () { // Расчет хода компьютера
+
+let steps = [];
+
+  for (let i = 0; i < 9; i++) { //Ищем все возможные ходы и добавляем их в массив
+    for (let j = 0; j < 9; j++) {
+      if (pole[j][i].player !== 2) continue;
+
+      for (let z = 0; z < pole[j][i].lines.length; z++) {
+        let a = pole[j][i].lines[z][0];
+        let b = pole[j][i].lines[z][1];
+
+        if (pole[a][b].player === 0) {
+          steps.push({
+            a: [j,i],
+            b: [a,b],
+            canEat: canEat([j, i], [a, b])
+          })
+        }
+
+      }
+    }
+  }
+
+  let stepsEat = steps.filter(function (step) {
+    return step.canEat === true;
+  });
+
+  if (stepsEat.length === 0) {
+    let min = 0;
+    let max = steps.length - 1;
+    let step = Math.round(min - 0.5 + Math.random() * (max - min + 1));
+
+    console.log(step);
+    
+
+    let x1 = steps[step].a[0]
+    let y1 = steps[step].a[1]
+    let x2 = steps[step].b[0]
+    let y2 = steps[step].b[1]
+
+    doBotStep([x1, y1], [x2,y2]);
+  } else {
+    let min = 0;
+    let max = stepsEat.length - 1;
+    let step = min - 0.5 + Math.random() * (max - min + 1)
+
+    let x1 = stepsEat[step].a[0]
+    let y1 = stepsEat[step].a[1]
+    let x2 = stepsEat[step].b[0]
+    let y2 = stepsEat[step].b[1]
+
+    doBotStep([x1, y1], [x2, y2]);
+  }
+  
+
+  console.log(steps);
+  console.log(stepsEat);
+  
+}
+
+window.doBotStep = function (a,b) { // Делает ход компьютера
+  pole[a[0]][a[1]].player = 0;
+  pole[b[0]][b[1]].player = 2;
+}
+
+window.canEat = function (a,b) { // Проверка, можно ли съесть
+  return false;
+}
