@@ -3,6 +3,7 @@ body {
   flex-flow: column wrap;
   justify-content: center;
   align-items: center;
+  font-family: 'Roboto', sans-serif;
 }
 
 #game {
@@ -14,4 +15,16 @@ body {
   flex-flow: row nowrap;
   margin-top: 10px;
   justify-content: center;
+}
+
+.container {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.analiz {
+  margin-left: 20px;
+  display: flex;
+  flex-flow: column wrap;
+  line-height: 1.2em;
 }

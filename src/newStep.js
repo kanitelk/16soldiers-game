@@ -1,6 +1,7 @@
 import pole from './pole'
 import canEat from './canEat.js'
 import botStep from './botStep'
+import score from './score'
 
 export default function (a, b) {
   // Функция отвечает за выполнения хода в игре (компьютером и человеком, в данном случае - человеком)

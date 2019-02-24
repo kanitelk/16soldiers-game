@@ -2,6 +2,7 @@ import "./css/style.scss";
 import p5 from "p5";
 import pole from "./pole";
 import newStep from "./newStep";
+import { newGame } from "./buttons"
 
 window.setup = function() {
   //Инициализация отрисовки Canvas
@@ -86,7 +87,6 @@ window.draw = function() {
           if (!isEqual(a, b)) {
             // Если позиции A и B не равны, делаем ход
             newStep(a, b); // Функция хода
-
             a = [j, i];
             b = [-1, -1];
           }

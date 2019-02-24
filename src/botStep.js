@@ -3,13 +3,15 @@
 */
 
 import pole from "./pole";
-import canEatBot from './canEat'
+import canEatBot from "./canEat";
+import score from './score'
 
-let doBotStep = function (a, b) {
+let doBotStep = function(a, b) {
   // Делает ход компьютера
   //console.log(a, b);
 
-  if (pole[b[0]][b[1]].player !== 0 || pole[b[0]][b[1]].player === undefined) return false; // Если на А нет игрока или игрок не бот, ошибка
+  if (pole[b[0]][b[1]].player !== 0 || pole[b[0]][b[1]].player === undefined)
+    return false; // Если на А нет игрока или игрок не бот, ошибка
 
   pole[a[0]][a[1]].player = 0;
   pole[b[0]][b[1]].player = 2;
@@ -42,7 +44,8 @@ export default function(a, b) {
         let a = pole[j][i].lines[z][0];
         let b = pole[j][i].lines[z][1];
 
-        if (pole[a][b].player === 0) { // Если место В пустое, добавляем его в массив возможных ходов
+        if (pole[a][b].player === 0) {
+          // Если место В пустое, добавляем его в массив возможных ходов
           steps.push({
             a: [j, i],
             b: [a, b],
@@ -50,19 +53,23 @@ export default function(a, b) {
           });
         }
 
-        if (pole[a][b].player === 1) { // Если на В игрок, узнаем, можем ли его съесть
+        if (pole[a][b].player === 1) {
+          // Если на В игрок, узнаем, можем ли его съесть
           let w, h; //w - строка, h - столбец
-          if ((a - j) < 0) w = a - 1; else w = a + 1; // Вычисляем координаты после съедения по диагонали
-          if ((b - i) < 0) h = b - 1; else h = b + 1;
+          if (a - j < 0) w = a - 1;
+          else w = a + 1; // Вычисляем координаты после съедения по диагонали
+          if (b - i < 0) h = b - 1;
+          else h = b + 1;
 
           if (a == j) w = a; // Вычисляем координаты после съедения по горизонтали
           if (b == i) h = b;
 
           //if (Math.abs(j - w) >= 2 || Math.abs(i - h) >= 2) continue;
 
-          console.log('Шашка врага: ', a, b, 'Следующая', w,h);
-          
+          // console.log('Шашка врага: ', a, b, 'Следующая', w,h);
+
           if (canEatBot([j, i], [w, h])) {
+            //Если можем есть, добавляем ход в массив возможных ходов
             steps.push({
               a: [j, i],
               b: [w, h],
@@ -74,14 +81,16 @@ export default function(a, b) {
     }
   }
 
-  let stepsEat = steps.filter(function (step) {
+  let stepsEat = steps.filter(function(step) {
+    // Новый массив StepsEat, где ходы только для того чтобы есть
     return step.canEat === true;
   });
 
-  console.log(steps);
-  console.log(stepsEat);
+  //console.log(steps);
+  //console.log(stepsEat);
 
   if (stepsEat.length === 0) {
+    // Если нет ходов со съедением, делаем рандомный ход
     let min = 0;
     let max = steps.length - 1;
     let step = Math.round(min - 0.5 + Math.random() * (max - min + 1));
@@ -93,6 +102,7 @@ export default function(a, b) {
 
     doBotStep([x1, y1], [x2, y2]);
   } else {
+    // Иначе выбираем любой ход со съедением
     let min = 0;
     let max = stepsEat.length - 1;
     let step = Math.round(min - 0.5 + Math.random() * (max - min + 1));
@@ -104,4 +114,6 @@ export default function(a, b) {
 
     doBotStep([x1, y1], [x2, y2]);
   }
+
+  score();
 }
