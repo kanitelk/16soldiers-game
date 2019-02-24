@@ -118,6 +118,6 @@ export default function () {
   }
   document.getElementById('green').innerText = count1;
   document.getElementById('red').innerText = count2;
-  console.log('Красные. ', 'Ходов: ', steps2.length, '  Живых шашек: ', count2);
-  console.log('Зеленые. ', 'Ходов: ', steps1.length, '  Живых шашек: ', count1);
+  //console.log('Красные. ', 'Ходов: ', steps2.length, '  Живых шашек: ', count2);
+  //console.log('Зеленые. ', 'Ходов: ', steps1.length, '  Живых шашек: ', count1);
 };

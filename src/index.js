@@ -3,6 +3,7 @@ import p5 from "p5";
 import pole from "./pole";
 import newStep from "./newStep";
 import { newGame } from "./buttons"
+import score from './score'
 
 window.setup = function() {
   //Инициализация отрисовки Canvas
@@ -86,6 +87,7 @@ window.draw = function() {
           b = [j, i];
           if (!isEqual(a, b)) {
             // Если позиции A и B не равны, делаем ход
+            score();
             newStep(a, b); // Функция хода
             a = [j, i];
             b = [-1, -1];

@@ -9,6 +9,11 @@ import pole from "./pole";
 export default function(a, b) {
   const enableLog = false; // ВКЛ/ВЫКЛ Вывод ошибок в консоль
 
+  if (pole[b[0]][b[1]].player === undefined) {
+    if (enableLog) console.error(a, b, c, "B: undefined!");
+    return false;
+  }
+
   let c = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2]; // Координата шашки, которую съедят (она посередине)
   let player = pole[a[0]][a[1]].player; // Номер игрока (1 или 2), который будет есть
 
