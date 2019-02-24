@@ -5,11 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="<%=htmlWebpackPlugin.files.chunks.main.css %>">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
+  <link rel="icon" href="./assets/icon.png" sizes="16x16 32x32 64x64 128x128" type="image/png">
+  <title>Game</title>
 </head>
- <button mat-button id="btn1">Button</button><br>
 <body>
-
+  <div id="game"></div>
+  <div id="buttons">
+    <button id="btn1">Button 1</button>
+  </div>
   <script src="<%= htmlWebpackPlugin.files.chunks.vendor.entry %>"></script>
   <script src="<%= htmlWebpackPlugin.files.chunks.main.entry %>"></script>
 </body>

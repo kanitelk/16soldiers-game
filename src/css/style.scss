@@ -1,0 +1,17 @@
+body {
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+#game {
+  width: 530px;
+}
+
+#buttons {
+  display: flex;
+  flex-flow: row nowrap;
+  margin-top: 10px;
+  justify-content: center;
+}
