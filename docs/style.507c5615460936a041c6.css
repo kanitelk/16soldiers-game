@@ -1,0 +1,1 @@
+body{display:flex;flex-flow:column wrap;justify-content:center;align-items:center;font-family:Roboto,sans-serif}#game{width:530px}#buttons{margin-top:10px;justify-content:center}#buttons,.container{display:flex;flex-flow:row nowrap}.analiz{margin-left:20px;display:flex;flex-flow:column wrap;line-height:1.6em}
