@@ -1,9 +1,9 @@
 import "./css/style.scss";
-import p5 from "p5";
+import p5 from "p5"; // Библиотека отрисовка графики
 import pole from "./pole";
 import newStep from "./newStep";
-import { newGame } from "./buttons"
-import score from './score'
+import { newGame } from "./buttons";
+import score from "./score";
 
 window.setup = function() {
   //Инициализация отрисовки Canvas
@@ -105,7 +105,6 @@ window.isEqual = function(a1, a2) {
   // TRUE - если a1 == a2, иначе  FALSE
   return a1.length == a2.length && a1.every((v, i) => v === a2[i]);
 };
-
 
 window.canEatBot = function(a, b, c) {
   // Проверка, можно ли съесть
